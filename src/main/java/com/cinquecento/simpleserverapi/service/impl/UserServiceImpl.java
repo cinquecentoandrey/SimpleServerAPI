@@ -1,15 +1,18 @@
 package com.cinquecento.simpleserverapi.service.impl;
 
+import com.cinquecento.simpleserverapi.model.Status;
 import com.cinquecento.simpleserverapi.model.User;
 import com.cinquecento.simpleserverapi.repository.UserRepository;
 import com.cinquecento.simpleserverapi.service.UserService;
 import com.cinquecento.simpleserverapi.util.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -20,8 +23,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
-        userRepository.save(user);
+    @Transactional
+    public Long save(User user) {
+        user.setStatus(Status.ONLINE);
+        return userRepository.save(user).getId();
     }
 
     @Override
@@ -39,13 +44,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void update(Long id, User user) {
         user.setId(id);
         userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void updateStatus(User user, Status status) {
+        user.setStatus(status);
+        userRepository.save(user);
     }
 }
