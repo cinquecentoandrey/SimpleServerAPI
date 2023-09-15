@@ -1,5 +1,8 @@
 package com.cinquecento.simpleserverapi.dto;
 
+import com.cinquecento.simpleserverapi.model.Status;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
 public class UserDTO {
@@ -20,6 +23,9 @@ public class UserDTO {
     @Email
     @NotEmpty(message = "Email should not not be empty")
     private String email;
+
+    @Enumerated(EnumType.ORDINAL)
+    private Status status;
 
     public String getUsername() {
         return username;
@@ -51,5 +57,13 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
