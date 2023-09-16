@@ -6,6 +6,7 @@ CREATE TABLE users
     telephone character varying NOT NULL,
     email character varying NOT NULL,
     status smallint NOT NULL,
+    image_uri varchar,
     CONSTRAINT users_pk PRIMARY KEY (id),
     CONSTRAINT users_username_key UNIQUE (username),
     CONSTRAINT users_age_check CHECK (age > 14 AND age < 120)

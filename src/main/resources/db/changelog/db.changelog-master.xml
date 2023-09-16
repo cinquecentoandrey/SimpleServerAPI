@@ -8,7 +8,7 @@
     <preConditions>
         <dbms type="postgresql"/>
     </preConditions>
-    
+
     <changeSet id="0" author="andrey_cinq">
         <tagDatabase tag="db_init"/>
     </changeSet>
