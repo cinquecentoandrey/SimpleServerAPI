@@ -39,16 +39,20 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
+    @Column(name = "image_uri")
+    private String imageURI;
+
     public User() {
     }
 
-    public User(Long id, String username, Integer age, String telephone, String email, Status status) {
+    public User(Long id, String username, Integer age, String telephone, String email, Status status, String imageURI) {
         this.id = id;
         this.username = username;
         this.age = age;
         this.telephone = telephone;
         this.email = email;
         this.status = status;
+        this.imageURI = imageURI;
     }
 
     public Long getId() {
@@ -97,5 +101,13 @@ public class User {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 }

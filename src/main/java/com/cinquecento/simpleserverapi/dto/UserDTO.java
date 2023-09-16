@@ -27,6 +27,8 @@ public class UserDTO {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
+    private String imageURI;
+
     public String getUsername() {
         return username;
     }
@@ -65,5 +67,13 @@ public class UserDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 }
