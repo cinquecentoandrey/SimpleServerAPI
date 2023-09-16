@@ -40,22 +40,27 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO get(@PathVariable(name = "id") Long id) throws UserNotFoundException {
-        return userConverter.convertToUserDTO(userService.findById(id));
+    public ResponseEntity<UserDTO> get(@PathVariable(name = "id") Long id) throws UserNotFoundException {
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+        UserDTO user = userConverter.convertToUserDTO(userService.findById(id));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(user);
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Long> create(@RequestBody @Valid UserDTO userDTO,
+    public ResponseEntity<Map<String, Long>> create(@RequestBody @Valid UserDTO userDTO,
                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new UserNotCreatedException(errorMessageBuilder.message(bindingResult));
         }
 
-        return Map.of("ID", userService.save(userConverter.convertToUser(userDTO)));
+        Long id = userService.save(userConverter.convertToUser(userDTO));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Map.of("ID", id));
     }
 
     @PatchMapping(value = "/change-status/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Long, List<String>> changeStatus(@PathVariable(name = "id") Long id,
+    public ResponseEntity<Map<Long, List<String>>> changeStatus(@PathVariable(name = "id") Long id,
                                                 @PathVariable(name = "status") String status) throws UserNotFoundException{
         User user = userService.findById(id);
         Status currentStatus = user.getStatus();
@@ -68,7 +73,8 @@ public class UserController {
             throw new IncorrectStatusException("Incorrect status: " + status);
         }
 
-        return Map.of(id, List.of(currentStatus.toString(), status));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Map.of(id, List.of(currentStatus.toString(), status)));
     }
 
     @ExceptionHandler
