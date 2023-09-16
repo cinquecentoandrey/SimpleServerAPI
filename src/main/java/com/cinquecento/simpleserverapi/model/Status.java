@@ -1,5 +1,5 @@
 package com.cinquecento.simpleserverapi.model;
 
 public enum Status {
-    ONLINE, OFFLINE
+    ONLINE, OFFLINE, ABSENT
 }
