@@ -5,6 +5,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
+import java.util.Date;
+
 public class UserDTO {
 
     @NotEmpty(message = "Username should not be empty")
@@ -26,6 +28,8 @@ public class UserDTO {
 
     @Enumerated(EnumType.ORDINAL)
     private Status status;
+
+    private Date statusTimestamp;
 
     private String imageURI;
 
@@ -75,5 +79,13 @@ public class UserDTO {
 
     public void setImageURI(String imageURI) {
         this.imageURI = imageURI;
+    }
+
+    public Date getStatusTimestamp() {
+        return statusTimestamp;
+    }
+
+    public void setStatusTimestamp(Date statusTimestamp) {
+        this.statusTimestamp = statusTimestamp;
     }
 }

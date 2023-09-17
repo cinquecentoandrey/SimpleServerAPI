@@ -7,6 +7,7 @@ CREATE TABLE users
     email character varying NOT NULL,
     status smallint NOT NULL,
     image_uri varchar,
+    status_timestamp timestamp,
     CONSTRAINT users_pk PRIMARY KEY (id),
     CONSTRAINT users_username_key UNIQUE (username),
     CONSTRAINT users_age_check CHECK (age > 14 AND age < 120)

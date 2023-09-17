@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long save(User user) {
         user.setStatus(Status.ABSENT);
+        user.setStatusTimestamp(new Date());
         return userRepository.save(user).getId();
     }
 
@@ -63,6 +65,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateStatus(User user, Status status) {
         user.setStatus(status);
+        user.setStatusTimestamp(new Date());
         userRepository.save(user);
     }
 
