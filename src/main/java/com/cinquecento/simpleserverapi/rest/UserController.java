@@ -6,9 +6,7 @@ import com.cinquecento.simpleserverapi.model.User;
 import com.cinquecento.simpleserverapi.service.impl.UserServiceImpl;
 import com.cinquecento.simpleserverapi.util.ErrorMessageBuilder;
 import com.cinquecento.simpleserverapi.util.UserConverter;
-import com.cinquecento.simpleserverapi.util.exception.IncorrectStatusException;
-import com.cinquecento.simpleserverapi.util.exception.UserNotCreatedException;
-import com.cinquecento.simpleserverapi.util.exception.UserNotFoundException;
+import com.cinquecento.simpleserverapi.util.exception.*;
 import com.cinquecento.simpleserverapi.util.response.UserErrorResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +76,38 @@ public class UserController {
                 .body(Map.of(id, List.of(currentStatus.toString(), status)));
     }
 
+    @GetMapping(value = "/statistic", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<UserDTO>> statistic(@RequestParam String status,
+                                                   @RequestParam String fieldForSort,
+                                                   @RequestParam String order) {
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+
+        if (
+                status.equalsIgnoreCase(Status.ONLINE.toString()) ||
+                status.equalsIgnoreCase(Status.OFFLINE.toString()) ||
+                status.equalsIgnoreCase(Status.ABSENT.toString())
+        ) {
+            throw new IllegalStatusException("Irrelevant status: " + status);
+        } else if (
+                order.equalsIgnoreCase("asc") ||
+                order.equalsIgnoreCase("desc")
+        ) {
+            throw new IllegalSortingOrderException("Irrelevant sorting order: " + order);
+        } else if (Arrays.stream(User.class.getDeclaredFields())
+                .anyMatch(field -> field.toString().equalsIgnoreCase(fieldForSort))) {
+            throw new IllegalFieldForSortException("Irrelevant field: " + fieldForSort);
+        }
+
+        List<UserDTO> users = userService
+                .findByStatus(Status.valueOf(status), fieldForSort, order)
+                .stream()
+                .map(userConverter::convertToUserDTO)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(users);
+    }
+
     @ExceptionHandler
     private ResponseEntity<UserErrorResponse> handledException(UserNotFoundException exception) {
         UserErrorResponse response = new UserErrorResponse(
@@ -107,5 +138,34 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    private ResponseEntity<UserErrorResponse> handledException(IllegalStatusException exception) {
+        UserErrorResponse response = new UserErrorResponse(
+                exception.getMessage(),
+                new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<UserErrorResponse> handledException(IllegalSortingOrderException exception) {
+        UserErrorResponse response = new UserErrorResponse(
+                exception.getMessage(),
+                new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<UserErrorResponse> handledException(IllegalFieldForSortException exception) {
+        UserErrorResponse response = new UserErrorResponse(
+                exception.getMessage(),
+                new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 }
