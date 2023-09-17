@@ -4,6 +4,7 @@ import com.cinquecento.simpleserverapi.model.Status;
 import com.cinquecento.simpleserverapi.model.User;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface UserService {
 
@@ -18,4 +19,6 @@ public interface UserService {
     void delete(Long id);
 
     void updateStatus(User user, Status status);
+
+    List<User> findByStatus(Status status, String propertyForSort, String order);
 }
