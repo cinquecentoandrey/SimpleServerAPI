@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Users")
@@ -46,12 +46,12 @@ public class User {
 
     @Column(name = "status_timestamp")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date statusTimestamp;
+    private LocalDateTime statusTimestamp;
 
     public User() {
     }
 
-    public User(Long id, String username, Integer age, String telephone, String email, Status status, String imageURI, Date statusTimestamp) {
+    public User(Long id, String username, Integer age, String telephone, String email, Status status, String imageURI, LocalDateTime statusTimestamp) {
         this.id = id;
         this.username = username;
         this.age = age;
@@ -118,11 +118,11 @@ public class User {
         this.imageURI = imageURI;
     }
 
-    public Date getStatusTimestamp() {
+    public LocalDateTime getStatusTimestamp() {
         return statusTimestamp;
     }
 
-    public void setStatusTimestamp(Date statusTimestamp) {
+    public void setStatusTimestamp(LocalDateTime statusTimestamp) {
         this.statusTimestamp = statusTimestamp;
     }
 }

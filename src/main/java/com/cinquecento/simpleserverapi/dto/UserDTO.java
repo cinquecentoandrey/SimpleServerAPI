@@ -5,7 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class UserDTO {
 
@@ -29,7 +29,7 @@ public class UserDTO {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
-    private Date statusTimestamp;
+    private LocalDateTime statusTimestamp;
 
     private String imageURI;
 
@@ -81,11 +81,11 @@ public class UserDTO {
         this.imageURI = imageURI;
     }
 
-    public Date getStatusTimestamp() {
+    public LocalDateTime getStatusTimestamp() {
         return statusTimestamp;
     }
 
-    public void setStatusTimestamp(Date statusTimestamp) {
+    public void setStatusTimestamp(LocalDateTime statusTimestamp) {
         this.statusTimestamp = statusTimestamp;
     }
 }
