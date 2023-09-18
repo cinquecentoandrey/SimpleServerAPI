@@ -10,10 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long save(User user) {
         user.setStatus(Status.ABSENT);
-        user.setStatusTimestamp(new Date());
+        user.setStatusTimestamp(LocalDateTime.now());
         return userRepository.save(user).getId();
     }
 
@@ -65,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateStatus(User user, Status status) {
         user.setStatus(status);
-        user.setStatusTimestamp(new Date());
+        user.setStatusTimestamp(LocalDateTime.now());
         userRepository.save(user);
     }
 
@@ -76,5 +74,10 @@ public class UserServiceImpl implements UserService {
         } else {
             return userRepository.findAllByStatus(status, Sort.by(propertyForSort.toLowerCase()).descending());
         }
+    }
+
+    @Override
+    public List<User> findByStatus(Status status, LocalDateTime timestamp) {
+        return userRepository.findAllByStatusAndStatusTimestampAfter(status, timestamp);
     }
 }

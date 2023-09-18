@@ -17,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -76,8 +78,11 @@ public class UserController {
                 .body(Map.of(id, List.of(currentStatus.toString(), status)));
     }
 
-    @GetMapping(value = "/statistic", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDTO>> statistic(@RequestParam String status,
+    /*
+        So far this method seems too messy, I need to think about refactoring it
+     */
+    @GetMapping(value = "/statistic-to-repair", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, List<UserDTO>>> statistic(@RequestParam String status,
                                                    @RequestParam String fieldForSort,
                                                    @RequestParam String order) {
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -105,8 +110,34 @@ public class UserController {
                 .toList();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(users);
+                .body(Map.of(new Date().toString(), users));
     }
+
+    @GetMapping("/statistic")
+    public ResponseEntity<Map<String, List<UserDTO>>> statistic(@RequestParam String ID,
+                                                                @RequestParam String status) {
+
+        LocalDateTime dateTimeAfter;
+        Status parsedStatus;
+
+        try {
+            dateTimeAfter = LocalDateTime.parse(ID);
+            parsedStatus = Status.valueOf(status.toUpperCase());
+        } catch (DateTimeParseException e) {
+            throw new IllegalTimestampInQueryException("Irrelevant ID timestamp: " + ID);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStatusException("Irrelevant status: " + status);
+        }
+
+        List<UserDTO> users = userService
+                .findByStatus(parsedStatus, dateTimeAfter)
+                    .stream()
+                    .map(userConverter::convertToUserDTO).toList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Map.of(ID, users));
+    }
+
 
     @ExceptionHandler
     private ResponseEntity<UserErrorResponse> handledException(UserNotFoundException exception) {
@@ -168,4 +199,13 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    private ResponseEntity<UserErrorResponse> handledException(IllegalTimestampInQueryException exception) {
+        UserErrorResponse response = new UserErrorResponse(
+                exception.getMessage(),
+                new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
