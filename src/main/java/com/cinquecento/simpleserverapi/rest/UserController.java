@@ -10,6 +10,8 @@ import com.cinquecento.simpleserverapi.util.exception.*;
 import com.cinquecento.simpleserverapi.util.response.UserErrorResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,14 +43,15 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ResponseEntity<UserDTO> get(@PathVariable(name = "id") Long id) throws UserNotFoundException {
-        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         UserDTO user = userConverter.convertToUserDTO(userService.findById(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(user);
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Order
     public ResponseEntity<Map<String, Long>> create(@RequestBody @Valid UserDTO userDTO,
                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -61,6 +64,7 @@ public class UserController {
     }
 
     @PatchMapping(value = "/change-status/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Order
     public ResponseEntity<Map<Long, List<String>>> changeStatus(@PathVariable(name = "id") Long id,
                                                 @PathVariable(name = "status") String status) throws UserNotFoundException{
         User user = userService.findById(id);
@@ -85,7 +89,6 @@ public class UserController {
     public ResponseEntity<Map<String, List<UserDTO>>> statistic(@RequestParam String status,
                                                    @RequestParam String fieldForSort,
                                                    @RequestParam String order) {
-        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
         if (
                 status.equalsIgnoreCase(Status.ONLINE.toString()) ||
@@ -114,6 +117,7 @@ public class UserController {
     }
 
     @GetMapping("/statistic")
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ResponseEntity<Map<String, List<UserDTO>>> statistic(@RequestParam String ID,
                                                                 @RequestParam String status) {
 
