@@ -1,4 +1,4 @@
-package com.cinquecento.simpleserverapi.util.response;
+package com.cinquecento.simpleserverapi.dto;
 
 public class UserErrorResponse {
 

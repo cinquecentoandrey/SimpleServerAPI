@@ -4,7 +4,7 @@ import com.cinquecento.simpleserverapi.model.Status;
 import com.cinquecento.simpleserverapi.model.User;
 import com.cinquecento.simpleserverapi.repository.UserRepository;
 import com.cinquecento.simpleserverapi.service.UserService;
-import com.cinquecento.simpleserverapi.util.exception.UserNotFoundException;
+import com.cinquecento.simpleserverapi.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

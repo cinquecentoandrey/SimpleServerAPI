@@ -1,4 +1,4 @@
-package com.cinquecento.simpleserverapi.util.exception;
+package com.cinquecento.simpleserverapi.exception;
 
 public class UserNotCreatedException extends RuntimeException {
     public UserNotCreatedException(String message) {

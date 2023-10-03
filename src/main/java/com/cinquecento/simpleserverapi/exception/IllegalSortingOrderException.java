@@ -1,4 +1,4 @@
-package com.cinquecento.simpleserverapi.util.exception;
+package com.cinquecento.simpleserverapi.exception;
 
 public class IllegalSortingOrderException extends RuntimeException{
     public IllegalSortingOrderException(String message) {

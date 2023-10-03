@@ -1,10 +1,8 @@
 package com.cinquecento.simpleserverapi.rest;
 
 import com.cinquecento.simpleserverapi.service.ImageService;
-import com.cinquecento.simpleserverapi.util.exception.UserNotFoundException;
-import com.cinquecento.simpleserverapi.util.response.UserErrorResponse;
+import com.cinquecento.simpleserverapi.dto.UserErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,6 @@ public class ImageController {
     }
 
     @PostMapping("/upload")
-    @Order
     public ResponseEntity<String> upload(@RequestParam(name = "image")MultipartFile file) throws IOException {
         String uploadImage = imageService.upload(file);
         return ResponseEntity.status(HttpStatus.OK)

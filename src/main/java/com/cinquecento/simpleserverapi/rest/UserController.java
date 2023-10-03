@@ -1,17 +1,15 @@
 package com.cinquecento.simpleserverapi.rest;
 
 import com.cinquecento.simpleserverapi.dto.UserDTO;
+import com.cinquecento.simpleserverapi.exception.*;
 import com.cinquecento.simpleserverapi.model.Status;
 import com.cinquecento.simpleserverapi.model.User;
 import com.cinquecento.simpleserverapi.service.impl.UserServiceImpl;
 import com.cinquecento.simpleserverapi.util.ErrorMessageBuilder;
 import com.cinquecento.simpleserverapi.util.UserConverter;
-import com.cinquecento.simpleserverapi.util.exception.*;
-import com.cinquecento.simpleserverapi.util.response.UserErrorResponse;
+import com.cinquecento.simpleserverapi.dto.UserErrorResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +41,6 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ResponseEntity<UserDTO> get(@PathVariable(name = "id") Long id) throws UserNotFoundException {
         UserDTO user = userConverter.convertToUserDTO(userService.findById(id));
         return ResponseEntity.status(HttpStatus.OK)
@@ -51,7 +48,6 @@ public class UserController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Order
     public ResponseEntity<Map<String, Long>> create(@RequestBody @Valid UserDTO userDTO,
                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -64,7 +60,6 @@ public class UserController {
     }
 
     @PatchMapping(value = "/change-status/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Order
     public ResponseEntity<Map<Long, List<String>>> changeStatus(@PathVariable(name = "id") Long id,
                                                 @PathVariable(name = "status") String status) throws UserNotFoundException{
         User user = userService.findById(id);
@@ -117,7 +112,6 @@ public class UserController {
     }
 
     @GetMapping("/statistic")
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ResponseEntity<Map<String, List<UserDTO>>> statistic(@RequestParam String ID,
                                                                 @RequestParam String status) {
 

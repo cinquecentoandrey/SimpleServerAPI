@@ -1,4 +1,4 @@
-package com.cinquecento.simpleserverapi.util.exception;
+package com.cinquecento.simpleserverapi.exception;
 
 public class IncorrectStatusException extends RuntimeException {
     public IncorrectStatusException(String message) {
